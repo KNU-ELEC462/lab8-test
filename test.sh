@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo ""
-echo "[INFO] Test script is not available yet. Stay tuned for updates!"
-exit 1
+#echo ""
+#echo "[INFO] Test script is not available yet. Stay tuned for updates!"
+#exit 1
 
 # Check and install dependencies
 install_if_missing() {
