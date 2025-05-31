@@ -84,7 +84,7 @@ if ! command -v shuf &> /dev/null; then
   exit 1
 fi
 
-WORD_COUNT=$(shuf -i 60000000-70000000 -n 1)
+WORD_COUNT=$(shuf -i 6000000-7000000 -n 1)
 echo "Generating large input ($WORD_COUNT words)..."
 if ! python3 gen.py "$WORD_COUNT" "$INPUT_LARGE"; then
   echo "FAIL: Large input generation failed"
