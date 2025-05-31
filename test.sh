@@ -37,6 +37,10 @@ fi
 
 install_if_missing "strace"
 
+echo "[INFO] Sudo privilege is required for accurate timing."
+echo "[INFO] Requesting sudo access..."
+sudo -v
+
 # Run test
 echo "[INFO] Running test script for ${TARGET}"
 ${TEST_SCRIPT}

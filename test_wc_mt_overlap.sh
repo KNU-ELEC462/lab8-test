@@ -103,18 +103,21 @@ fi
 
 # === 7. Run wc -w to get baseline word count ===
 echo "Running wc -w..."
+echo 3 | sudo tee /proc/sys/vm/drop_caches
 WC_LOG="${OUTPUT_DIR}/wc.log"
 WC_COUNT=$( (time -p wc -w < "$INPUT_LARGE") 2> "$WC_LOG" | awk '{print $1}')
 echo "Expected word count: $WC_COUNT"
 
 # === 8. Run baseline wc_mt under 2-core constraint ===
 echo "Running $TARGET1 (baseline)..."
+echo 3 | sudo tee /proc/sys/vm/drop_caches
 { time -p taskset -c 0-1 "$BIN1" "$INPUT_LARGE" "$NUM_THREADS"; } > "$LOG1_LARGE" 2>&1
   COUNT1=$(grep -oP 'Total words: \K[0-9]+' "$LOG1_LARGE")
   TIME1=$(grep ^real "$LOG1_LARGE" | awk '{print $2}')
 
 # === 9. Run wc_mt_overlap under same conditions ===
 echo "Running $TARGET2 (overlap)..."
+echo 3 | sudo tee /proc/sys/vm/drop_caches
 { time -p taskset -c 0-1 "$BIN2" "$INPUT_LARGE" "$NUM_THREADS"; } > "$LOG2_LARGE" 2>&1
   COUNT2=$(grep -oP 'Total words: \K[0-9]+' "$LOG2_LARGE")
   TIME2=$(grep ^real "$LOG2_LARGE" | awk '{print $2}')
