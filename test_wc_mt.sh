@@ -93,7 +93,7 @@ fi
 
 # Run wc -w
 echo "Running baseline wc -w..."
-echo 3 | sudo tee /proc/sys/vm/drop_caches
+echo 3 | sudo tee /proc/sys/vm/drop_caches 1>/dev/null
 WC_LOG="${OUTPUT_DIR}/wc.log"
 WC_COUNT=$( (time -p wc -w < "$INPUT_LARGE") 2> "$WC_LOG" | awk '{print $1}')
 WC_TIME=$(grep real "$WC_LOG" | awk '{print $2}')
@@ -102,7 +102,7 @@ echo "Baseline time: $WC_TIME s"
 
 # Run wc_mt
 echo "Running target program: $TARGET"
-echo 3 | sudo tee /proc/sys/vm/drop_caches
+echo 3 | sudo tee /proc/sys/vm/drop_caches 1>/dev/null
 { time -p "$BIN" "$INPUT_LARGE" "$NUM_THREADS"; } > "$LARGE_LOG" 2>&1
 
 # Extract results from log
