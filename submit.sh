@@ -15,8 +15,8 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Default commit message
-LAB_ID=9
-DEFAULT_MSG="[SUBMIT] Lab #${LAB_ID}"
+REPO_NAME="$(basename "$(git config --get remote.origin.url)" .git)"
+DEFAULT_MSG="[SUBMIT] ${REPO_NAME}"
 
 # Step 1: Check if inside a git repo
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -25,8 +25,20 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
 fi
 
 # Step 2: Check if user.name and user.email are configured
-name=$(git config user.name)
-email=$(git config user.email)
+name=$(git config --get user.name)
+email=$(git config --get user.email)
+
+# Fallback to global config if local config is empty
+if [ -z "$name" ]; then
+  name=$(git config --global --get user.name)
+  git config user.name "${name}"
+fi
+if [ -z "$email" ]; then
+  email=$(git config --global --get user.email)
+  git config user.email "${email}"
+fi
+
+echo -e "${GREEN}[INFO] Git user: $name <$email>${NC}"
 
 if [ -z "$name" ] || [ -z "$email" ]; then
   echo -e "${RED}[ERROR] Git user name and/or email not configured.${NC}"
@@ -36,8 +48,6 @@ if [ -z "$name" ] || [ -z "$email" ]; then
   echo "  git config --global user.email \"your@email.com\""
   exit 1
 fi
-
-echo -e "${GREEN}[INFO] Git user: $name <$email>${NC}"
 
 # Step 3: Pull latest changes to avoid conflicts
 echo -e "${GREEN}[INFO] Pulling latest changes from remote...${NC}"
